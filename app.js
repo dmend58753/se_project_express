@@ -1,28 +1,32 @@
-const express = require('express');
-const mongoose = require("mongoose")
+const express = require("express");
+const mongoose = require("mongoose");
 const indexRouter = require("./routes/index");
+const { createUser, login } = require("./controllers/users");
+const { getItems } = require("./controllers/clothingitems");
+const auth = require("./middlewares/auth");
+const cors = require("cors");
 
 const app = express();
-const {PORT = 3001} = process.env;
+const { PORT = 3001 } = process.env;
 
 // Add middleware to parse JSON request bodies
 app.use(express.json());
-
-// Temporary authorization middleware
-app.use((req, res, next) => {
-  req.user = {
-    _id: '507f1f77bcf86cd799439011' // temporary hardcoded user ID
-  };
-  next();
-});
+app.use(cors());
 
 mongoose
-.connect('mongodb://127.0.0.1:27017/wtwr_db')
-.then(() => {
-  console.error("connected to mongo");
-})
-.catch(console.error);
+  .connect("mongodb://127.0.0.1:27017/wtwr_db")
+  .then(() => {
+    console.error("connected to mongo");
+  })
+  .catch(console.error);
 
+// Public routes (no auth required)
+app.post("/signin", login);
+app.post("/signup", createUser);
+app.get("/items", getItems);
+
+// Protected routes (auth required)
+app.use(auth);
 app.use("/", indexRouter);
 
 app.listen(PORT, () => {
