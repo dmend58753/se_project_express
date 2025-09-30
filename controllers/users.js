@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../utils/config');
-const { UNAUTHORIZED, FORBIDDEN, CONFLICT } = require('../utils/errors');
+const { UNAUTHORIZED, CONFLICT } = require('../utils/errors');
 
 
 const User = require('../models/user');
@@ -20,12 +20,13 @@ if (!email || !password) {
   return res.status(BAD_REQUEST).send({ message: 'Email and password are required' });
 }
 
-  bcrypt.hash(password, 10)
+  return bcrypt.hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => {
       // Remove password from response
-      delete user._doc.password;
-      res.status(CREATED).send(user);
+      const userCopy = user.toObject();
+      delete userCopy.password;
+      res.status(CREATED).send(userCopy);
     })
     .catch((err) => {
       console.error(err);
@@ -47,7 +48,7 @@ const login = (req, res) => {
     return res.status(BAD_REQUEST).send({ message: 'Email and password are required' });
   }
 
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
       res.send({ token });

@@ -50,14 +50,15 @@ const deleteItem = (req, res) => {
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
-        return res.status(FORBIDDEN).send({ message: "Access denied" });
+        res.status(FORBIDDEN).send({ message: "Access denied" });
+        return Promise.reject(new Error("Access denied"));
       }
 
       return ClothingItem.findByIdAndDelete(itemId);
     })
-    .then((deleteItem) => {
-      if (deleteItem) {
-        res.status(OK).send(deleteItem);
+    .then((deletedItem) => {
+      if (deletedItem._id) {
+        res.status(OK).send(deletedItem);
       }
     })
     .catch((err) => {
@@ -77,7 +78,7 @@ const deleteItem = (req, res) => {
 const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
-    { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
+    { $addToSet: { likes: req.user._id } }, 
     { new: true }
   )
     .orFail()
