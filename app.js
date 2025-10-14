@@ -1,15 +1,18 @@
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const { errors } = require('celebrate');
+const { errors } = require("celebrate");
 const indexRouter = require("./routes/index");
 const { createUser, login } = require("./controllers/users");
 const { getItems } = require("./controllers/clothingitems");
 const auth = require("./middlewares/auth");
 const errorHandler = require("./middlewares/error-handler");
-const { validateUserBody, validateAuthentication } = require("./middlewares/validation");
-const { requestLogger, errorLogger } = require('./middlewares/logger');
+const {
+  validateUserBody,
+  validateAuthentication,
+} = require("./middlewares/validation");
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -27,6 +30,12 @@ mongoose
     console.error("connected to mongo");
   })
   .catch(console.error);
+
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
 
 // Public routes (no auth required)
 app.post("/signin", validateAuthentication, login);
@@ -46,6 +55,6 @@ app.use(errors());
 // our centralized handler
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.error(`Listening on port ${PORT}`);
 });
