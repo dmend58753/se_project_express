@@ -1,5 +1,11 @@
+const { errorLogger } = require('./logger');
+
 const errorHandler = (err, req, res, next) => {
-  console.error(err);
+  errorLogger.log({
+    level: 'error',
+    message: err.message,
+    meta: err,
+  });
 
   if (err.statusCode) {
     return res.status(err.statusCode).send({ message: err.message });
@@ -25,7 +31,7 @@ const errorHandler = (err, req, res, next) => {
 
   return res
     .status(500)
-    .send({ message: "An error has occured on the server" });
+  .send({ message: "An error has occurred on the server" });
 };
 
 module.exports = errorHandler;

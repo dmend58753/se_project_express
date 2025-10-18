@@ -1,7 +1,9 @@
+
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const helmet = require("helmet");
 const { errors } = require("celebrate");
 const indexRouter = require("./routes/index");
 const { createUser, login } = require("./controllers/users");
@@ -17,15 +19,18 @@ const { requestLogger, errorLogger } = require("./middlewares/logger");
 const app = express();
 const { PORT = 3001 } = process.env;
 
+
 // Add middleware to parse JSON request bodies
 app.use(express.json());
 app.use(cors());
+app.use(helmet());
 
 // enable request logger
 app.use(requestLogger);
 
+const { MONGODB_URI = "mongodb://127.0.0.1:27017/wtwr_db" } = process.env;
 mongoose
-  .connect("mongodb://127.0.0.1:27017/wtwr_db")
+  .connect(MONGODB_URI)
   .then(() => {
     console.error("connected to mongo");
   })

@@ -1,11 +1,7 @@
 const ClothingItem = require("../models/clothingitem");
 const {
-  BAD_REQUEST,
-  NOT_FOUND,
-  INTERNAL_SERVER_ERROR,
   OK,
   CREATED,
-  FORBIDDEN,
   BadRequestError,
   NotFoundError,
   ForbiddenError,

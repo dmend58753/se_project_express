@@ -1,13 +1,9 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
-const { UNAUTHORIZED, CONFLICT } = require("../utils/errors");
 
 const User = require("../models/user");
 const {
-  BAD_REQUEST,
-  NOT_FOUND,
-  INTERNAL_SERVER_ERROR,
   OK,
   CREATED,
   BadRequestError,
@@ -65,14 +61,11 @@ const login = (req, res, next) => {
 
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
+    .orFail(new NotFoundError("User not found"))
     .then((user) => res.status(OK).send(user))
-   .catch((err) => {
-  if (err.name === "DocumentNotFoundError") {
-    next(new NotFoundError("User not found"));
-  } else {
-    next(err);
-  }
-});
+    .catch((err) => {
+      next(err);
+    });
 };
 
 const updateCurrentUser = (req, res, next) => {
@@ -84,13 +77,13 @@ const updateCurrentUser = (req, res, next) => {
     { new: true, runValidators: true }
   )
     .then((user) => res.status(OK).send(user))
-   .catch((err) => {
-  if (err.name === "ValidationError") {
-    next(new BadRequestError(err.message));
-  } else {
-    next(err);
-  }
-});
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        next(new BadRequestError(err.message));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports = {
