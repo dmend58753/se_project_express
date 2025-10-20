@@ -20,3 +20,7 @@ git@github.com:dmend58753/se_project_react.git
 ## Project Pitch Video
 
 Check out [my project pitch video](https://drive.google.com/file/d/1HTXzFgZOuaXSGXq2XT_y_GHE4symQ3Q7/view?usp=sharing), where I describe my project and some challenges I faced while building it.
+
+
+
+

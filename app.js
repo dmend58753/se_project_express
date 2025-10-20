@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -18,7 +17,6 @@ const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
 const { PORT = 3001 } = process.env;
-
 
 // Add middleware to parse JSON request bodies
 app.use(express.json());
@@ -60,6 +58,6 @@ app.use(errors());
 // our centralized handler
 app.use(errorHandler);
 
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.error(`Listening on port ${PORT}`);
 });
