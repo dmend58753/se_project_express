@@ -12,7 +12,7 @@ Before committing your code, make sure you edit the file `sprint.txt` in the roo
 
 ## Deployment Info
 
-**Backend domain:** http://34.26.112.149:3001
+**Backend domain:** http://api.WTWR-dmend.ignorelist.com
 
 **Frontend GitHub repo:**
 git@github.com:dmend58753/se_project_react.git
